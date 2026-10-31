@@ -6,7 +6,7 @@ export function ProductCard({ product }: { product: Product }) {
     <article className="product-card">
       <Link to={`/products/${product.id}`} className="product-card-link">
         <img src={product.image} alt="" />
-        <h3>{product.title}</h3>
+        <h3 title={product.title}>{product.title}</h3>
         <p className="price">${product.price.toFixed(2)}</p>
         <p className="rating">
           {product.rating.rate.toFixed(1)} / 5 ({product.rating.count} reviews)
