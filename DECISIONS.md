@@ -1,24 +1,26 @@
 # Decisions and assumptions
 
-## Assumptions where the brief was unclear
+## Assumptions
 
 **Top rated.** Fake Store products already have `rating.rate` and `rating.count`. Featured products (home and category) are sorted by rate descending, then by review count, then sliced to five. This is deterministic and does not require a CMS “chosen 5” list yet.
 
 **Search.** A product matches if the query appears in `title`, `description`, or `category` (case-insensitive). Matching is substring, not fuzzy search.
 
-**Enquiry.** Required fields: name, email, message. Phone is optional. Submitting sends one email to `SALES_INBOX` and shows a thank-you page. Enquiries are not persisted; the inbox *is* the record for the PoC.
+**Enquiry.** Required fields: name, email, message. Phone is optional. Submitting sends one email to `SALES_INBOX` and shows a thank-you page. Enquiries are not persisted; the inbox is the record for the PoC.
 
 **Categories.** Category names come from the Fake Store API. Links encode names so values like `men's clothing` work.
 
-**Look and feel.** Creative work is explicitly still coming, so the UI is a plain, accessible catalogue. Branding name “Northwind Catalogue” is a placeholder.
+**Look and feel.** The UI is a plain, accessible catalogue until brand assets exist. The name “Northwind Catalogue” is a placeholder.
 
-## Requirements dropped or simplified
+**Card text.** On the category grid, product names wrapped to different heights, so the price and rating on each card sat on a different line. I asked for name, price, and rating to line up across the row. Each title now keeps a three-line block (longer names end with an ellipsis), and the price and rating sit under that block with no extra paragraph margin.
 
-- **No real email provider.** Mailpit in Docker replaces SES/SendGrid so reviewers need no accounts. Swap `SmtpMailer` config (or the `Mailer` implementation) later.
-- **No auth, cart, or checkout.** Out of scope for the given acceptance criteria.
+## Left out of this pass
+
+- **No real email provider.** Mailpit in Docker replaces SES/SendGrid so the app runs locally without creating an account. Swap `SmtpMailer` config (or the `Mailer` implementation) later.
+- **No auth, cart, or checkout.** Customers browse, search, and enquire. Purchasing is a later step.
 - **No product CMS.** The Fake Store adapter is the catalogue. A database-backed source would implement the same `ProductSource` interface.
-- **No production hosting / IaC.** AWS-compatible if added later (ECS/Fargate + SES), but the brief only requires local run. Shipping Terraform in a 2–3 hour window would have crowded out tests.
-- **No mobile client.** Web covers the critical path with simpler reviewer setup.
+- **No production hosting.** The API can sit on AWS later (ECS/Fargate + SES). This pass only needs a local run, so there is no Terraform.
+- **No mobile client.** The web app covers browse, search, and enquire without an emulator.
 
 ## How this grows past the PoC
 

@@ -1,15 +1,15 @@
 # Product catalogue PoC
 
-Take-home for the Officeworks AI-Native Engineer role: a product catalogue that customers can browse, search, and enquire about. Product data comes from the [Fake Store API](https://fakestoreapi.com/), always via this repo’s backend.
+A product catalogue that customers can browse, search, and enquire about. Product data comes from the [Fake Store API](https://fakestoreapi.com/), always via this repo’s backend.
 
 ## Stack choice
 
 | Layer | Choice | Why |
 | --- | --- | --- |
-| Client | React + TypeScript (Vite) | Preferred in the brief, fast to review in a browser, easy to swap styling later. |
+| Client | React + TypeScript (Vite) | Runs in a browser, easy to change styling later. |
 | Backend | Node.js + TypeScript (Express) | Same language as the client. Product source and mailer sit behind interfaces so Fake Store / Mailpit can be replaced without rewriting routes. |
 
-Mobile was not chosen because a reviewer can exercise the full web path in under 10 minutes without an emulator.
+Mobile was not chosen. The web app covers browse, search, and enquire without an emulator.
 
 ## Run locally (recommended)
 
@@ -67,16 +67,16 @@ cd backend && npm test
 cd frontend && npm test
 ```
 
-## Docs for reviewers
+## Notes
 
 - [DECISIONS.md](DECISIONS.md) — assumptions, cuts, and how this grows past the PoC
-- [AI_USAGE.md](AI_USAGE.md) — tools, prompts, and review notes
+- [AI_USAGE.md](AI_USAGE.md) — tools, prompts, and corrections
 
 ## Time spent
 
 About **3 hours**, split roughly:
 
-- Planning and brief interpretation: 30 minutes
+- Planning: 30 minutes
 - Building: 1 hour 45 minutes
 - Testing and local verification: 30 minutes
 - Reviewing generated code and writing docs: 15 minutes

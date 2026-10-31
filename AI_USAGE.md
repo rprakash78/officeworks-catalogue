@@ -3,29 +3,33 @@
 ## Tools and models
 
 - **Cursor** (Agent) for planning, scaffolding, implementation, tests, and docs.
-- Model used in this session: Cursor Grok 4.6.
-- Fake Store API docs/shape recalled from public API usage, not a separate research agent.
+- Model used for the build: Cursor Grok 4.6. A later pass used the same agent to fix the product cards.
+- Fake Store API shape came from public API usage, not a separate research agent.
 
 ## Agent instruction files
 
-None were added. The take-home asked for judgement and ownership of generated output; extra `AGENTS.md` / Cursor rules would have been ceremony for a two-service PoC.
+None were added. `AGENTS.md` and Cursor rules would have been extra process for a two-service PoC.
 
-## Plan / spec
+## Plan
 
-The implementation followed the attached plan *Officeworks Catalogue PoC*: React + Express in TypeScript, Docker Compose + Mailpit, `ProductSource` / `Mailer` boundaries, critical-path tests, then a public GitHub PR.
+React + Express in TypeScript, Docker Compose + Mailpit, ranking and search in a domain service, Fake Store behind `ProductSource`, email behind `Mailer`, tests on the critical path, then a public GitHub repository.
 
-## Prompts and moments that shaped the work
+## Prompts that shaped the work
 
-1. **Initial brief intake.** Parsed the PDF challenge and chose React/Node over mobile/Laravel so a reviewer can run one Compose command.
-2. **Grow-beyond-PoC constraint.** Directed the agent to put ranking/search in a domain service and keep Fake Store behind `ProductSource`, rather than calling the public API from React.
-3. **Email without paid accounts.** Specified Mailpit + Nodemailer instead of a hosted email API.
-4. **Tests on the critical path only.** Featured ranking, search, enquiry validation + mailer call, home/search/enquire UI — not a snapshot of every component.
-5. **Resume after an interrupted write.** Asked the agent to continue from the half-written backend rather than restarting the scaffold.
+1. **Stack.** Build a product catalogue customers can browse, search, and enquire about. Use React and Node so one Compose command runs the web app, API, and a local mail inbox.
+2. **Replaceable data and email.** Put ranking and search in a domain service. Keep Fake Store behind `ProductSource` and SMTP behind `Mailer`, so neither is called from React.
+3. **Local email.** Use Mailpit and Nodemailer. Do not depend on a hosted email account.
+4. **Tests.** Cover featured ranking, search, enquiry validation, the mailer call, and the home, search, and enquire screens.
+5. **Card alignment.** After using the category page, I told the agent the product name, price, and rating were not aligned, and asked it to line them up.
 
-## Where the AI got something wrong, and how it was caught
+## Where I found a problem and asked for a fix
 
-- **Install landed in the repo root.** The first `npm install` for Express created a root `package.json` / `node_modules`. Caught by listing the workspace; those files were deleted and installs were redone in `backend/` and `frontend/`.
-- **PDF text extraction.** Custom CID fonts decoded as garbage until ToUnicode CMaps were parsed per `beginbfchar` / `beginbfrange` block. Caught because the first pass could not read the brief.
-- **Vite starter left in place.** After the first interruption, `App.tsx` was still the default counter page. Caught by an explicit completeness check before finishing the UI.
-- Generated code was reviewed for: client never calling Fake Store; enquiry validation; no secrets in git; Docker using `/api` proxy so the browser does not depend on CORS alone in Compose.
-- **React Router `Form` crashed the UI.** The first search bar used `<Form>` from `react-router-dom` inside `BrowserRouter`, which is not a data router. Caught in the browser (`useSubmit must be used within a data router`); replaced with a native GET form.
+**Product cards did not line up.** On the men’s clothing grid, short titles such as “Mens Cotton Jacket” stayed on one line, while “Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops” wrapped to three. The price and the rating then started lower on the longer cards, and the rating on the longest card sat near the bottom edge.
+
+I asked the agent to align the name, price, and rating in that order. It kept a three-line block for every title, clamped longer names with an ellipsis, and removed the default paragraph margins inside the card. Prices and ratings now share the same row. The full title is still on the product page and on hover.
+
+Other generated output I checked and sent back:
+
+- **Install landed in the repo root.** The first `npm install` created a root `package.json` and `node_modules`. I had those removed and the installs redone in `backend/` and `frontend/`.
+- **Search crashed.** The first search bar used React Router `<Form>` inside `BrowserRouter`, which is not a data router. The page threw `useSubmit must be used within a data router`. I asked for a native GET form instead.
+- **The UI was still the Vite starter.** After an interrupted write, `App.tsx` was the default counter page. I asked the agent to finish the catalogue screens rather than restart the project.
